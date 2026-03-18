@@ -1,9 +1,9 @@
-# _ChRIS_ Plugin Template
+# _ChRIS_ Maxillofacial Reslice Plugin
 
 [![test status](https://github.com/FNNDSC/python-chrisapp-template/actions/workflows/src.yml/badge.svg)](https://github.com/FNNDSC/python-chrisapp-template/actions/workflows/src.yml)
 [![MIT License](https://img.shields.io/github/license/FNNDSC/python-chrisapp-template)](LICENSE)
 
-This is a minimal template repository for _ChRIS_ plugin applications in Python.
+This plugin takes in axial maxillofacial CT images, and reslices them into coronal and sagittal images.
 
 ## About _ChRIS_ Plugins
 
