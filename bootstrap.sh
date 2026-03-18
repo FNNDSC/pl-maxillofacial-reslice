@@ -15,9 +15,9 @@
 # ----------------------------------------
 
 PLUGIN_NAME="$(basename $(dirname $(realpath $0)))"  # name of current directory
-PLUGIN_TITLE='My ChRIS Plugin'
-SCRIPT_NAME='commandname'
-DESCRIPTION='A ChRIS plugin to do something awesome'
+PLUGIN_TITLE='pl-maxillofacial-reslice'
+SCRIPT_NAME='maxillofacial_reslice'
+DESCRIPTION='A ChRIS plugin to reslice maxillofacial CT scans and create coronal and sagittal resliced images.'
 ORGANIZATION='FNNDSC'
 EMAIL='dev@babyMRI.org'
 
