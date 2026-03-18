@@ -46,7 +46,7 @@ ENABLE_ACTIONS_BUILD=yes
 # STEP 2. Uncomment the line where it says READY=yes
 # ----------------------------------------
 
-#READY=yes
+READY=yes
 
 # ----------------------------------------
 # STEP 3. Run: ./bootstrap.sh
