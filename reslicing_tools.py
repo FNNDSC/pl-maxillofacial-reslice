@@ -17,6 +17,7 @@ import numpy as np
 import pydicom
 from pydicom.uid import generate_uid
 
+
 # ---------------------------------------------- HELPER FUNCTIONS -----------------------------------------------------
 
 def load_dicoms(dicoms_dir):
@@ -51,7 +52,7 @@ def save_dicoms(stack, template, dicoms_dir, pixel_spacing, slice_spacing, orien
         ds.PixelData = np.asarray(slice_data, dtype=template.pixel_array.dtype).tobytes()
         
         name = dicoms_dir.name
-        path = Path(join(dicoms_dir, f"name-{idx:04d}-0001.dcm"))
+        path = Path(join(dicoms_dir, f"{name}-{idx:04d}-0001.dcm"))
         ds.save_as(path, write_like_original=False)
 
 # ----------------------------------------------- MAIN FUNCTIONS ------------------------------------------------------
