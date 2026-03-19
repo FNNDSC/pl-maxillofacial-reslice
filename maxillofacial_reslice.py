@@ -1,28 +1,35 @@
-#!/usr/bin/env python
 
+#!/usr/bin/env python
+"""
+Developed by Arman Avesta, MD, PhD
+FNNDSC | Boston Children's Hospital | Harvard Medical School
+"""
+# --------------------------------------------- ENVIRONMENT SETUP -----------------------------------------------------
+# Project imports:
+from reslicing_tools import axial_reslice
+
+# System imports:
+from chris_plugin import chris_plugin, PathMapper
+from os.path import join 
 from pathlib import Path
 from argparse import ArgumentParser, Namespace, ArgumentDefaultsHelpFormatter
 
-from chris_plugin import chris_plugin, PathMapper
-
+# Version:
 __version__ = '1.0.0'
 
+# ---------------------------------------------- ARGUMENT PARSING -----------------------------------------------------
+
 DISPLAY_TITLE = r"""
-ChRIS Plugin Template Title
+pl-maxillofacial-reslice
 """
 
-
-parser = ArgumentParser(description='!!!CHANGE ME!!! An example ChRIS plugin which '
-                                    'counts the number of occurrences of a given '
-                                    'word in text files.',
+parser = ArgumentParser(description='This plugin takes in axial maxillofacial CTs and reslices them into coronal and sagittal images.',
                         formatter_class=ArgumentDefaultsHelpFormatter)
-parser.add_argument('-w', '--word', required=True, type=str,
-                    help='word to count')
-parser.add_argument('-p', '--pattern', default='**/*.txt', type=str,
-                    help='input file filter glob')
 parser.add_argument('-V', '--version', action='version',
                     version=f'%(prog)s {__version__}')
 
+
+# ------------------------------------------- ChRIS PLUGIN WRAPPER ----------------------------------------------------
 
 # The main function of this *ChRIS* plugin is denoted by this ``@chris_plugin`` "decorator."
 # Some metadata about the plugin is specified here. There is more metadata specified in setup.py.
@@ -30,12 +37,15 @@ parser.add_argument('-V', '--version', action='version',
 # documentation: https://fnndsc.github.io/chris_plugin/chris_plugin.html#chris_plugin
 @chris_plugin(
     parser=parser,
-    title='My ChRIS plugin',
-    category='',                 # ref. https://chrisstore.co/plugins
+    title='pl-maxillofacial-reslice',
+    category='PACS-integrated reslicing of 3D images',                 # ref. https://chrisstore.co/plugins
     min_memory_limit='100Mi',    # supported units: Mi, Gi
     min_cpu_limit='1000m',       # millicores, e.g. "1000m" = 1 CPU core
     min_gpu_limit=0              # set min_gpu_limit=1 to enable GPU
 )
+
+# ----------------------------------------------- MAIN FUNCTION -------------------------------------------------------
+
 def main(options: Namespace, inputdir: Path, outputdir: Path):
     """
     *ChRIS* plugins usually have two positional arguments: an **input directory** containing
@@ -56,15 +66,15 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
     #
     # Refer to the documentation for more options, examples, and advanced uses e.g.
     # adding a progress bar and parallelism.
-    mapper = PathMapper.file_mapper(inputdir, outputdir, glob=options.pattern, suffix='.count.txt')
-    for input_file, output_file in mapper:
-        # The code block below is a small and easy example of how to use a ``PathMapper``.
-        # It is recommended that you put your functionality in a helper function, so that
-        # it is more legible and can be unit tested.
-        data = input_file.read_text()
-        frequency = data.count(options.word)
-        output_file.write_text(str(frequency))
 
+    axial_dicoms_dir = Path(join(inputdir, "axial"))
+
+    axial_reslice(
+        axial_dicoms_dir=axial_dicoms_dir,
+        outputdir=outputdir
+    )
+
+# ------------------------------------------------ EXECUTE MAIN -------------------------------------------------------
 
 if __name__ == '__main__':
     main()
