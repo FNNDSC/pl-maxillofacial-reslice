@@ -34,7 +34,6 @@ def save_dicoms(stack, template, dicoms_dir, pixel_spacing, slice_spacing, orien
     row = np.array(orientation[0:3], dtype=float)
     col = np.array(orientation[3:6], dtype=float)
     normal = np.cross(row, col)
-
     for idx, slice_data in enumerate(stack, start=1):
         ds = copy.deepcopy(template)
         ds.Rows, ds.Columns = slice_data.shape
@@ -43,12 +42,17 @@ def save_dicoms(stack, template, dicoms_dir, pixel_spacing, slice_spacing, orien
         ds.InstanceNumber = idx
         ds.SeriesInstanceUID = series_uid
         ds.SOPInstanceUID = generate_uid()
+
         if hasattr(ds, "file_meta"):
             ds.file_meta.MediaStorageSOPInstanceUID = ds.SOPInstanceUID
+
         ds.ImageOrientationPatient = list(orientation)
         ds.ImagePositionPatient = list(origin + normal * float((idx - 1) * slice_spacing))
         ds.PixelData = np.asarray(slice_data, dtype=template.pixel_array.dtype).tobytes()
-        ds.save_as(dicoms_dir / f"{Path(dicoms_dir).name}_{idx:04d}.dcm", write_like_original=False)
+        
+        name = dicoms_dir.name
+        path = Path(join(dicoms_dir, f"name-{idx:04d}-0001.dcm"))
+        ds.save_as(path, write_like_original=False)
 
 # ----------------------------------------------- MAIN FUNCTIONS ------------------------------------------------------
 
@@ -96,27 +100,31 @@ def axial_reslice(axial_dicoms_dir, outputdir):
         orientation=(0, 0, 1, 0, 1, 0),
     )
 
-
 # ----------------------------------------------- CODE TESTING --------------------------------------------------
 
 if __name__ == "__main__":
+    
     axial_reslice()
 
-# path = '/Users/arman/Desktop/pl-maxillofacial/axial/IM-0001-0001.dcm'
-# ds = pydicom.dcmread(path)
+path = Path('/Users/arman/projects/pl-maxillofacial-reslice/images/axial/IM-0001-0001.dcm')
+outputdir = Path('/Users/arman/projects/pl-maxillofacial-reslice/images/output')
+outputdir.name
+idx = 1
+f"{outputdir.name}_{idx:04d}.dcm"
+ds = pydicom.dcmread(path)
 
-# pixel_keywords = [
-#     "Rows", "Columns", "NumberOfFrames",
-#     "PixelSpacing", "SliceThickness", "SpacingBetweenSlices",
-#     "ImagePositionPatient", "ImageOrientationPatient",
-#     "SamplesPerPixel", "PhotometricInterpretation",
-#     "BitsAllocated", "BitsStored", "HighBit", "PixelRepresentation",
-#     "RescaleSlope", "RescaleIntercept",
-#     "WindowCenter", "WindowWidth",
-# ]
+pixel_keywords = [
+    "Rows", "Columns", "NumberOfFrames",
+    "PixelSpacing", "SliceThickness", "SpacingBetweenSlices",
+    "ImagePositionPatient", "ImageOrientationPatient",
+    "SamplesPerPixel", "PhotometricInterpretation",
+    "BitsAllocated", "BitsStored", "HighBit", "PixelRepresentation",
+    "RescaleSlope", "RescaleIntercept",
+    "WindowCenter", "WindowWidth",
+]
 
-# for kw in pixel_keywords:
-#     if kw in ds:
-#         print(f"{kw}: {getattr(ds, kw)}")
+for kw in pixel_keywords:
+    if kw in ds:
+        print(f"{kw}: {getattr(ds, kw)}")
 
 
