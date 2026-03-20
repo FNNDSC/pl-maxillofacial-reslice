@@ -61,6 +61,7 @@ def axial_reslice(axial_dicoms_dir, coronal_dicoms_dir, sagittal_dicoms_dir):
 
     datasets = load_dicoms(axial_dicoms_dir)
     if not datasets:
+        print("No axial images found")
         return
 
     first = datasets[0]
