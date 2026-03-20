@@ -16,7 +16,6 @@ import numpy as np
 import pydicom
 from pydicom.uid import generate_uid
 
-
 # ---------------------------------------------- HELPER FUNCTIONS -----------------------------------------------------
 
 def load_dicoms(dicoms_dir):
