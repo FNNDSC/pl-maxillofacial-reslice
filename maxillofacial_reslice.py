@@ -25,8 +25,8 @@ pl-maxillofacial-reslice
 
 parser = ArgumentParser(description='This plugin takes in axial maxillofacial CTs '
                                     'and reslices them into coronal and sagittal images.'
-                                    '- Input: axial dicom images in the folder "axial" within the passed input directory.'
-                                    '- Outpus: coronal and sagittal dicom images in the folders "coronal" and "sagittal"'
+                                    'Input: axial dicom images in the folder "axial" within the passed input directory.'
+                                    'Outpus: coronal and sagittal dicom images in the folders "coronal" and "sagittal"'
                                     'within the passed output directory.',
                         formatter_class=ArgumentDefaultsHelpFormatter)
 parser.add_argument('-V', '--version', action='version',
