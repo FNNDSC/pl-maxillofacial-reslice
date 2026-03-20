@@ -11,7 +11,6 @@ FNNDSC | Boston Children's Hospital | Harvard Medical School
 import copy
 from pathlib import Path
 from shutil import rmtree
-
 import numpy as np
 import pydicom
 from pydicom.uid import generate_uid
