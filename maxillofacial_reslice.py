@@ -10,7 +10,6 @@ from reslicing_tools import axial_reslice
 
 # System imports:
 from chris_plugin import chris_plugin, PathMapper
-from os.path import join 
 from pathlib import Path
 from argparse import ArgumentParser, Namespace, ArgumentDefaultsHelpFormatter
 
@@ -59,20 +58,11 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
 
     print(DISPLAY_TITLE)
 
-    # Typically it's easier to think of programs as operating on individual files
-    # rather than directories. The helper functions provided by a ``PathMapper``
-    # object make it easy to discover input files and write to output files inside
-    # the given paths.
-    #
-    # Refer to the documentation for more options, examples, and advanced uses e.g.
-    # adding a progress bar and parallelism.
+    axial_dicoms_dir = inputdir / 'axial'
+    coronal_dicoms_dir = inputdir / 'coronal'
+    sagittal_dicoms_dir = inputdir / 'sagittal'
 
-    axial_dicoms_dir = Path(join(inputdir, "axial"))
-
-    axial_reslice(
-        axial_dicoms_dir=axial_dicoms_dir,
-        outputdir=outputdir
-    )
+    axial_reslice(axial_dicoms_dir, coronal_dicoms_dir, sagittal_dicoms_dir)
 
 # ------------------------------------------------ EXECUTE MAIN -------------------------------------------------------
 

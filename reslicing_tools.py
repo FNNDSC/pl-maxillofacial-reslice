@@ -8,7 +8,6 @@ FNNDSC | Boston Children's Hospital | Harvard Medical School
 
 
 # System imports:
-from os.path import join, exists
 import copy
 from pathlib import Path
 from shutil import rmtree
@@ -30,11 +29,13 @@ def load_dicoms(dicoms_dir):
     return datasets
 
 def save_dicoms(stack, template, dicoms_dir, pixel_spacing, slice_spacing, orientation):
+
     series_uid = generate_uid()
     origin = np.array(getattr(template, "ImagePositionPatient", [0.0, 0.0, 0.0]), dtype=float)
     row = np.array(orientation[0:3], dtype=float)
     col = np.array(orientation[3:6], dtype=float)
     normal = np.cross(row, col)
+
     for idx, slice_data in enumerate(stack, start=1):
         ds = copy.deepcopy(template)
         ds.Rows, ds.Columns = slice_data.shape
@@ -51,13 +52,11 @@ def save_dicoms(stack, template, dicoms_dir, pixel_spacing, slice_spacing, orien
         ds.ImagePositionPatient = list(origin + normal * float((idx - 1) * slice_spacing))
         ds.PixelData = np.asarray(slice_data, dtype=template.pixel_array.dtype).tobytes()
         
-        name = dicoms_dir.name
-        path = Path(join(dicoms_dir, f"{name}-{idx:04d}-0001.dcm"))
-        ds.save_as(path, write_like_original=False)
+        ds.save_as(dicoms_dir / f"{dicoms_dir.name}_{idx:04d}.dcm", write_like_original=False)
 
 # ----------------------------------------------- MAIN FUNCTIONS ------------------------------------------------------
 
-def axial_reslice(axial_dicoms_dir, outputdir):
+def axial_reslice(axial_dicoms_dir, coronal_dicoms_dir, sagittal_dicoms_dir):
     datasets = load_dicoms(axial_dicoms_dir)
     if not datasets:
         return
@@ -70,9 +69,6 @@ def axial_reslice(axial_dicoms_dir, outputdir):
 
     coronal = np.transpose(stack, (1, 0, 2))   # (y, z, x) -> rows=z, cols=x, step=y
     sagittal = np.transpose(stack, (2, 0, 1))  # (x, z, y) -> rows=z, cols=y, step=x
-
-    coronal_dicoms_dir = Path(join(outputdir, "coronal"))
-    sagittal_dicoms_dir = Path(join(outputdir, "sagittal"))
 
     # Delete coronal and sagittal folders if they exist
     if coronal_dicoms_dir.exists():
@@ -104,28 +100,25 @@ def axial_reslice(axial_dicoms_dir, outputdir):
 # ----------------------------------------------- CODE TESTING --------------------------------------------------
 
 if __name__ == "__main__":
-    
-    axial_reslice()
 
-path = Path('/Users/arman/projects/pl-maxillofacial-reslice/images/axial/IM-0001-0001.dcm')
-outputdir = Path('/Users/arman/projects/pl-maxillofacial-reslice/images/output')
-outputdir.name
-idx = 1
-f"{outputdir.name}_{idx:04d}.dcm"
-ds = pydicom.dcmread(path)
+    axial_dicoms_dir = Path('/Users/arman/projects/pl-maxillofacial-reslice/images/axial')
+    coronal_dicoms_dir = Path('/Users/arman/projects/pl-maxillofacial-reslice/images/coronal')
+    sagittal_dicoms_dir = Path('/Users/arman/projects/pl-maxillofacial-reslice/images/sagittal')
 
-pixel_keywords = [
-    "Rows", "Columns", "NumberOfFrames",
-    "PixelSpacing", "SliceThickness", "SpacingBetweenSlices",
-    "ImagePositionPatient", "ImageOrientationPatient",
-    "SamplesPerPixel", "PhotometricInterpretation",
-    "BitsAllocated", "BitsStored", "HighBit", "PixelRepresentation",
-    "RescaleSlope", "RescaleIntercept",
-    "WindowCenter", "WindowWidth",
-]
+    axial_reslice(axial_dicoms_dir, coronal_dicoms_dir, sagittal_dicoms_dir)
 
-for kw in pixel_keywords:
-    if kw in ds:
-        print(f"{kw}: {getattr(ds, kw)}")
+    # pixel_keywords = [
+    #     "Rows", "Columns", "NumberOfFrames",
+    #     "PixelSpacing", "SliceThickness", "SpacingBetweenSlices",
+    #     "ImagePositionPatient", "ImageOrientationPatient",
+    #     "SamplesPerPixel", "PhotometricInterpretation",
+    #     "BitsAllocated", "BitsStored", "HighBit", "PixelRepresentation",
+    #     "RescaleSlope", "RescaleIntercept",
+    #     "WindowCenter", "WindowWidth",
+    # ]
+    #
+    # for kw in pixel_keywords:
+    #     if kw in ds:
+    #         print(f"{kw}: {getattr(ds, kw)}")
 
 
