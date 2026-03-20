@@ -60,8 +60,8 @@ def main(options: Namespace, inputdir: Path, outputdir: Path):
     print(DISPLAY_TITLE)
 
     axial_dicoms_dir = inputdir / 'axial'
-    coronal_dicoms_dir = inputdir / 'coronal'
-    sagittal_dicoms_dir = inputdir / 'sagittal'
+    coronal_dicoms_dir = outputdir / 'coronal'
+    sagittal_dicoms_dir = outputdir / 'sagittal'
 
     axial_reslice(axial_dicoms_dir, coronal_dicoms_dir, sagittal_dicoms_dir)
 
