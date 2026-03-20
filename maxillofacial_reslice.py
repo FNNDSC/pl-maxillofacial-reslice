@@ -22,7 +22,8 @@ DISPLAY_TITLE = r"""
 pl-maxillofacial-reslice
 """
 
-parser = ArgumentParser(description='This plugin takes in axial maxillofacial CTs and reslices them into coronal and sagittal images.',
+parser = ArgumentParser(description='This plugin takes in axial maxillofacial CTs '
+                                    'and reslices them into coronal and sagittal images.',
                         formatter_class=ArgumentDefaultsHelpFormatter)
 parser.add_argument('-V', '--version', action='version',
                     version=f'%(prog)s {__version__}')
