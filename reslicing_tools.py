@@ -16,17 +16,19 @@ import numpy as np
 import pydicom
 from pydicom.uid import generate_uid
 
-
 # ---------------------------------------------- HELPER FUNCTIONS -----------------------------------------------------
 
 def load_dicoms(dicoms_dir):
+
     paths = sorted(Path(dicoms_dir).glob("*.dcm"))
     datasets = [pydicom.dcmread(p) for p in paths]
     try:
         datasets = sorted(datasets, key=lambda d: int(d.InstanceNumber))
     except Exception:
         pass
+
     return datasets
+
 
 def save_dicoms(stack, template, dicoms_dir, pixel_spacing, slice_spacing, orientation):
 
@@ -57,6 +59,7 @@ def save_dicoms(stack, template, dicoms_dir, pixel_spacing, slice_spacing, orien
 # ----------------------------------------------- MAIN FUNCTIONS ------------------------------------------------------
 
 def axial_reslice(axial_dicoms_dir, coronal_dicoms_dir, sagittal_dicoms_dir):
+
     datasets = load_dicoms(axial_dicoms_dir)
     if not datasets:
         return
@@ -97,7 +100,7 @@ def axial_reslice(axial_dicoms_dir, coronal_dicoms_dir, sagittal_dicoms_dir):
         orientation=(0, 0, 1, 0, 1, 0),
     )
 
-# ----------------------------------------------- CODE TESTING --------------------------------------------------
+# ----------------------------------------------- CODE TESTING --------------------------------------------------------
 
 if __name__ == "__main__":
 
